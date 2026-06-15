@@ -27,7 +27,7 @@ def donuts(count):
   count_str = "many"
   if count < 10:
     count_str = str(count)
-  return 'Number of donuts: ' + count_str
+  return f'Number of donuts: {count_str}'
 
 
 # B. both_ends
