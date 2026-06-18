@@ -47,6 +47,42 @@ import sys
 
 ###
 
+def read_words(filename):
+  words = []
+  file = open(filename, 'rt', encoding='utf-8')
+  for line in file:
+    for word in line.split():
+      words.append(word.lower())
+  file.close()
+  return words
+
+def parse_words(filename):
+  words = read_words(filename)
+  word_count = {} # {string: int}
+  for word in words:
+    count = word_count[word] + 1 if word in word_count else 1
+    word_count[word] = count
+
+  words_per_count = {} # {int: [string]}
+  for word, count in word_count.items():
+    wc = words_per_count[count] if count in words_per_count else []
+    wc.append(word)
+    words_per_count[count] = wc
+
+  sorted_words = []
+  for count in sorted(words_per_count.keys(), reverse=True):
+    sorted_words.extend(sorted(words_per_count[count]))
+
+  return sorted_words
+
+def print_words(filename):
+  sorted_words = parse_words(filename)
+  print(sorted_words)
+
+def print_top(filename):
+  sorted_words = parse_words(filename)
+  print(sorted_words[:5])
+
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
 def main():
