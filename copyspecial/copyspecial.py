@@ -15,9 +15,28 @@ import subprocess
 """Copy Special exercise
 """
 
-# +++your code here+++
-# Write functions and modify main() to call them
+def get_special_paths(dir):
+  """
+  returns a list of the absolute paths of the special files in the given directory
+  """
+  special_files = []
+  cwd = os.getcwd()
+  files = os.listdir(dir)
+  for file in files:
+    m = re.search(r"__\w+__", file)
+    if m:
+      special_files.append(os.path.join(cwd, dir, file))
+  return special_files
 
+def copy_to(paths, dir):
+  """
+  given a list of paths, copies those files into the given directory
+  """
+  if not os.path.exists(dir):
+    os.mkdir(dir)
+
+  for path in paths:
+    shutil.copy(path, dir)
 
 
 def main():
@@ -34,22 +53,24 @@ def main():
   # todir and tozip are either set from command line
   # or left as the empty string.
   # The args array is left just containing the dirs.
-  todir = ''
+  dst_dir = os.path.join(os.getcwd(), 'out') 
   if args[0] == '--todir':
-    todir = args[1]
+    dst_dir = args[1]
     del args[0:2]
 
-  tozip = ''
+  dst_zip = os.path.join(os.getcwd(), 'out')
   if args[0] == '--tozip':
-    tozip = args[1]
+    dst_zip = args[1]
     del args[0:2]
 
   if not args: # A zero length array evaluates to "False".
     print('error: must specify one or more dirs')
     sys.exit(1)
 
-  # +++your code here+++
-  # Call your functions
+  for src_dir in args:
+    paths = get_special_paths(src_dir)
+    copy_to(paths, dst_dir)
+  shutil.make_archive(dst_zip, 'zip', dst_dir)
 
 if __name__ == '__main__':
   main()
